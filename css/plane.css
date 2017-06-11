@@ -1,0 +1,122 @@
+*{margin: 0;padding: 0}
+#container{
+	width: 512px;
+	height: 768px;
+	box-shadow: 5px 5px 5px #aaa;
+	position: relative;
+	padding: 0.1px;
+	overflow: hidden;
+}
+#con{
+	width: 512px;
+	height: 768px;
+	position: absolute;
+	z-index:10;
+}
+#cover{
+	width: 512px;
+	height: 768px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: url(img/img_bg_logo.jpg);
+	z-index:20;
+}
+#cover.hid{
+	display: none;
+}
+#cover img{
+	display: block;
+	width: 500px;
+	height: 150px;
+	margin: 200px auto;
+}
+#cover button{
+	display: block;
+	width: 250px;
+	height:75px;
+	margin: 0 auto;
+	background: url(img/button.png);
+	background-size:100% 100%;
+	border: none;
+	cursor: pointer;
+	font-size: 25px;
+	font-family:Microsoft YaHei;
+	color: #000
+}
+#bg{
+	width: 512px;
+	height: 1536px;
+	position: absolute;
+	left: 0;
+	top: -768px;
+	z-index: -1000
+}
+#bg img{
+	width:512px;
+	height:768px;
+	display: block;
+}
+#hero{
+	display:block;
+	width: 109px;
+	height: 82px;
+	position: absolute;
+	top:600px;
+	left:201px;
+	display: none;
+}
+#gameOverPage{
+	width: 512px;
+	height: 768px;
+	background-color: rgba(0,0,0,0.5);
+	position: absolute;
+	left: 0;
+	top: 0;
+	display: none;
+	z-index: 20;
+}
+#gameOverPage #panel{
+	width: 400px;
+	height: 300px;
+	background: url(img/panel.png);
+	background-size: 100% 100%;
+	margin: 200px auto;
+}
+#gameOverPage #panel #panelScore{
+	width: 400px;
+	height: 100px;
+	text-align: center;
+	font-family: "arial black";
+	font-size: 48px;
+	color: red;
+	line-height: 100px;
+}
+#restartBtn{
+	width: 240px;
+	height: 70px;
+	background: url(img/button.png);
+	background-size: 100% 100%;
+	margin: 100px  auto;
+	text-align: center;
+	line-height: 70px;
+	font-family: "微软雅黑";
+	color: black;
+	font-size: 24px;
+	cursor: pointer;
+}
+#gameScore{
+	width: 300px;
+	height: 100px;
+	float: right;
+	font-family: "arial black";
+	font-size: 72px;
+	text-align: right;
+	line-height: 100px;
+	color: white;
+	opacity: 0.6;
+	position: absolute;
+	left: 200px;
+	top: 0;
+	z-index: 10;
+}
