@@ -19,7 +19,7 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	background: url(img/img_bg_logo.jpg);
+	background: url(../img/img_bg_logo.jpg);
 	z-index:20;
 }
 #cover.hid{
@@ -36,7 +36,7 @@
 	width: 250px;
 	height:75px;
 	margin: 0 auto;
-	background: url(img/button.png);
+	background: url(../img/button.png);
 	background-size:100% 100%;
 	border: none;
 	cursor: pointer;
@@ -79,7 +79,7 @@
 #gameOverPage #panel{
 	width: 400px;
 	height: 300px;
-	background: url(img/panel.png);
+	background: url(../img/panel.png);
 	background-size: 100% 100%;
 	margin: 200px auto;
 }
@@ -95,7 +95,7 @@
 #restartBtn{
 	width: 240px;
 	height: 70px;
-	background: url(img/button.png);
+	background: url(../img/button.png);
 	background-size: 100% 100%;
 	margin: 100px  auto;
 	text-align: center;
