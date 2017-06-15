@@ -1,6 +1,7 @@
 window.onload = function(){
 	var loading = document.getElementById('loading');
 	loading.className = 'hid';
+
 	var cover=document.getElementById('cover');
 	var bg=document.getElementById('bg');
 	var con=document.getElementById('con');
@@ -9,11 +10,16 @@ window.onload = function(){
 	var gameScore = document.getElementById('gameScore');
 	var panelScore = document.getElementById('panelScore');
 	var restartBtn = document.getElementById('restartBtn');
+	var left = false;
+	var right = false;
+	var up = false;
+	var down = false;
 	var boss;
 	var bbullets=[];
 	var hbullets=[];//飞机子弹
 	var ebullets=[];//敌机子弹
 	var enemies=[];//敌人
+	var keyMove=null;
 	var addB=null;
 	var addBb=null;
 	var updateBoss=null;
@@ -25,40 +31,91 @@ window.onload = function(){
 	var SCORE=0;
 	var conw=con.offsetWidth;
 	var	conh=con.offsetHeight;
+	var startTime,endTime;
+	var scoreBefore,scoreAfter;
 
+	var EventUtil = {
+		addHandler:function(element,type,handler){
+			if (element.addEventListener) {
+				element.addEventListener(type,handler,false);
+			}else if(element.attachEvent){
+				element.attachEvent("on"+type,handler);
+			}else{
+				element['on'+type]=handler;
+			}
+		},
+		removeHandler:function(element,type,handler){
+			if (element.removeEventListenr) {
+				element.removeEventListenr(type,handler,false);
+			}else if(element.detachEvent){
+				element.detachEvent('on'+type,handler);
+			}else{
+				element('on'+type)=null;
+			}
+		},
+		getEvent: function(event){
+			return event?event:window.event;
+		},
+		getTarget: function(event){
+			return event.target||event.srcElement;
+		},
+		preventDefault:function(event){
+			if (event.preventDefault) {
+				event.preventDefault();
+			}else{
+				event.returnValue=false;
+			}
+		},
+		stopPropagation:function(event){
+			if (event.stopPropagation) {
+				event.preventPropagation();
+			}else{
+				event.cancelBubble = true;
+			}
+		}
+	};
 
-	restartBtn.onclick=function(){
-		gameState=1;
-		con.innerHTML='';
-		enemies=[];
-		ebullets=[];
-		hbullets=[];
-		bbullets=[];
-		gameOverPage.style.display='none';
-		SCORE=0;
-		gameScore.innerHTML = SCORE;
-		hero = document.createElement('img');
-		hero.src = 'img/hero.png';
-		con.appendChild(hero);
-		hero.style.display='block';
-		hero.style.left = '240px'
-		hero.style.top = '600px';
-		hero.style.width = '109px';
-		hero.style.height  = '82px';
-		hero.style.position = 'absolute';
-		
-		addHb=setInterval(heroBullets,200);
-		updateTimer = setInterval(update,30);
-		addEnemyTimer = setInterval(myEnemy,200);
-		addEb=setInterval(enemyBullets,1000);
-	}
+	EventUtil.addHandler(document,'click',function(event){
+		event = EventUtil.getEvent(event);
+		var target = EventUtil.getTarget(event);
+		if (target == restartBtn) {
+			gameState=1;
+			con.innerHTML='';
+			enemies=[];
+			ebullets=[];
+			hbullets=[];
+			bbullets=[];
+			gameOverPage.style.display='none';
+			SCORE=0;
+			gameScore.innerHTML = SCORE;
+			hero = document.createElement('img');
+			hero.src = 'img/hero.png';
+			con.appendChild(hero);
+			hero.style.display='block';
+			hero.style.left = '240px'
+			hero.style.top = '600px';
+			hero.style.width = '109px';
+			hero.style.height  = '82px';
+			hero.style.position = 'absolute';
 
-	startBtn.onclick = function(){
-		cover.style.display = 'none';
-		hero.style.display='block';
-		gameState= 1;
-		bgMove();
-	}
+			addHb=setInterval(heroBullets,200);
+			updateTimer = setInterval(update,30);
+			addEnemyTimer = setInterval(myEnemy,300);
+			addEb=setInterval(enemyBullets,1000);
+			keyMove=setInterval(key,100); 
+			addB=null;
+			endtime = null;
+			startTime = +new Date();
+			scoreBefore = 0;
+			scoreAfter = 0;
+		}else if(target == startBtn){
+			cover.style.display = 'none';
+			hero.style.display='block';
+			gameState= 1;
+			bgMove();
+			startTime = +new Date();
+		}
+	});
 
 	function bgMove(){
 		go=setInterval(function(){
@@ -74,25 +131,93 @@ window.onload = function(){
 	}
 
 
-	con.onmousemove=function(ev){
-			var ev=window.event||ev;
-			var x=ev.clientX;
-			var y=ev.clientY;
-			if (x>=457) {
-				hero.style.left=403+'px';
-			}else if (x<=55) {
+	keyMove = setInterval(key,100);
+	function key(){
+		var speed = 30;
+		if (left) {
+			var heroleft=hero.offsetLeft-speed; 
+			if (heroleft<=0) {
 				hero.style.left=0+'px';
 			}else{
-				hero.style.left=(x-55)+'px';
+				hero.style.left=heroleft+'px';
 			}
-			if (y>=727) {
-				hero.style.top=686+'px';
-			}else if (y<=41) {
+		}else if(up){
+			var herotop=hero.offsetTop-speed;
+			if (herotop<=0) {
 				hero.style.top=0+'px';
 			}else{
-				hero.style.top=(y-41)+'px';
+				hero.style.top=herotop+'px';
+			}
+		}else if(right){
+			var heroright=hero.offsetLeft+speed; 
+			if (heroright>=403) {
+				hero.style.left=403+'px';
+			}else{
+				hero.style.left=heroright+'px';
+			}
+		}else if(down){
+			var herobottom = hero.offsetTop+speed;
+			if (herobottom>=686) {
+				hero.style.top=686+'px';
+			}else{
+				hero.style.top=herobottom+'px';
 			}
 		}
+	}
+
+	EventUtil.addHandler(con, 'mousemove',function(event){
+		event = EventUtil.getEvent(event); 
+		follow(event);
+	});
+	EventUtil.addHandler(con, 'touchmove',function(event){
+		event = EventUtil.getEvent(event); 
+		follow(event);
+	});
+
+	function follow(event){
+		var x=event.clientX;
+		var y=event.clientY;
+		if (x>=457) {
+			hero.style.left=403+'px';
+		}else if (x<=55) {
+			hero.style.left=0+'px';
+		}else{
+			hero.style.left=(x-55)+'px';
+		}
+		if (y>=727) {
+			hero.style.top=686+'px';
+		}else if (y<=41) {
+			hero.style.top=0+'px';
+		}else{
+			hero.style.top=(y-41)+'px';
+		}
+	};
+
+	EventUtil.addHandler(document,'keydown',function(event){
+		var event = EventUtil.getEvent(event);
+		var keyCode = event.keyCode;
+		switch(keyCode){
+			case 37:
+				left=true;
+				break;
+			case 38:
+				up=true;
+				break;
+			case 39:
+				right=true;
+				break;
+			case 40:
+				down = true;
+				break;
+		}
+	})
+		
+	EventUtil.addHandler(document,'keyup',function(){
+		left=false;
+		up=false;
+		right=false;
+		down=false;
+	})
 
 
 		//添加hero的子弹,200毫秒生成一对
@@ -171,11 +296,16 @@ window.onload = function(){
 					enemies.splice(j,1);
 					SCORE++;
 					gameScore.innerHTML=SCORE;
-					if (SCORE==20) {
-						clearInterval(addEb);
-						clearInterval(addHb);
-						clearInterval(addEnemyTimer);
-						addB=setTimeout(addBoss,3000);
+					endTime = +new Date();
+					var timeDiffer = endTime-startTime;
+					if (timeDiffer >= 7000) {
+						if (addB == null) {
+							clearInterval(addEb);
+							clearInterval(addHb);
+							clearInterval(addEnemyTimer);
+							addB = setTimeout(addBoss,3000);
+							scoreBefore = SCORE;
+						}
 					}
 				}
 			}
@@ -225,7 +355,7 @@ window.onload = function(){
 			enemy.style.position='absolute';
 			enemy.style.width='100px';
 
-			var x=Math.random()*(conw-100);
+			var x=Math.random()*(conw-80);
 			enemy.style.left=x+'px';
 			enemy.style.top='0px';
 			con.appendChild(enemy);
@@ -273,7 +403,6 @@ window.onload = function(){
 			if (result) {
 				hb.src='img/bomb.png';
 				hb.style.width='60px';
-				console.log(hb.style.width);
 					(function(node){ 
 						setTimeout(function(){
 							con.removeChild(node);
@@ -282,8 +411,11 @@ window.onload = function(){
 				hbullets.splice(p,1);
 				SCORE++;
 				gameScore.innerHTML=SCORE;
-				if (SCORE==50) {
+				scoreAfter = SCORE;
+				var scoreDiffer = scoreAfter-scoreBefore;
+				if (scoreDiffer>=40) {
 					boss.src='img/bomb.png';
+					console.log(boss);
 					setTimeout(removeB,500);
 					clearInterval(addBb);
 					clearInterval(addHb);
@@ -292,8 +424,11 @@ window.onload = function(){
 			}
 		}
 		function removeB(){
-			con.removeChild(boss);
+			if(boss){
+				con.removeChild(boss);
+			}
 		}
+
 		boss.style.top=boss.offsetTop+bSpeed+'px';
 			if (boss.offsetTop>768-80) {
 				con.removeChild(boss);
@@ -319,6 +454,7 @@ window.onload = function(){
 				con.removeChild(bbt);
 				con.removeChild(hero);
 				gameOver();
+
 			}
 		}
 	}
@@ -355,6 +491,7 @@ window.onload = function(){
 		clearInterval(updateTimer);//清除子弹移动定时器
 		clearInterval(addHb);//清除增加我飞机子弹的定时器
 		clearInterval(addEb);
+		clearInterval(keyMove);
 		if (addB!=null) {
 			clearTimeout(addB);
 		}
@@ -364,14 +501,14 @@ window.onload = function(){
 			clearInterval(updateBoss);
 		}
 		
-		if (localStorage['BetScore']) {
-			if (SCORE>localStorage['BetScore']) {
-				localStorage['BetScore']=SCORE;
+		if (localStorage['BestScore']) {
+			if (SCORE>localStorage['BestScore']) {
+				localStorage['BestScore']=SCORE;
 			}
 		}else{
-			localStorage['BetScore']=SCORE;
+			localStorage['BestScore']=SCORE;
 		}
-		panelScore.innerHTML='最高分：'+localStorage['BetScore']+'<br>'+'分数：'+SCORE;
+		panelScore.innerHTML='最高分：'+localStorage['BestScore']+'<br>'+'分数：'+SCORE;
 		gameState=0;
 	}
 
