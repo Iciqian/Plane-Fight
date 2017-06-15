@@ -1,5 +1,6 @@
 window.onload = function(){
-
+	var loading = document.getElementById('loading');
+	loading.className = 'hid';
 	var cover=document.getElementById('cover');
 	var bg=document.getElementById('bg');
 	var con=document.getElementById('con');
