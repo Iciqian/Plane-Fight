@@ -76,6 +76,24 @@
 	left:201px;
 	display: none;
 }
+#bossMsg{
+	display: none;
+	position: absolute;
+	top: 50%;
+	margin-top: -75px;
+	width: 100%;
+	height: 150px;
+	line-height: 150px;
+	text-align: center;
+	font-size: 30px;
+	color: red;
+	font-weight: bold;
+	background-color: rgba(0,0,0,.5);
+	z-index: 100;
+}
+#bossMsg.show{
+	display: block;
+}
 #gameOverPage{
 	width: 512px;
 	height: 768px;
