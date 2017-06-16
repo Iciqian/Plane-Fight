@@ -121,7 +121,7 @@ window.onload = function() {
 
 	function bgMove() {
 		go = setInterval(function() {
-			var nowT = parseInt(window.getComputedStyle(bg, null).top);
+			var nowT = bg.offsetTop;
 			if (nowT >= 0) {
 				clearInterval(go);
 				bg.style.top = -768 + 'px';
@@ -179,8 +179,14 @@ window.onload = function() {
 	});
 
 	function follow(event) {
-		var x = event.clientX-container.offsetLeft;
-		var y = event.clientY-container.offsetTop;
+		if (event.clientX) {
+			var x = event.clientX-container.offsetLeft;
+			var y = event.clientY-container.offsetTop;
+		}else if(event.changedTouches[0].clientX){
+			var x = event.changedTouches[0].clientX-container.offsetLeft;
+			var y = event.changedTouches[0].clientY-container.offsetTop;
+		}
+		
 		if (x >= 457) {
 			hero.style.left = 403 + 'px';
 		} else if (x <= 55) {
