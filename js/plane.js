@@ -2,6 +2,7 @@ window.onload = function() {
 	var loading = document.getElementById('loading');
 	loading.className = 'hid';
 
+	var container = document.getElementById('container');
 	var cover = document.getElementById('cover');
 	var bg = document.getElementById('bg');
 	var con = document.getElementById('con');
@@ -173,12 +174,13 @@ window.onload = function() {
 	});
 	EventUtil.addHandler(con, 'touchmove', function(event) {
 		event = EventUtil.getEvent(event);
+		EventUtil.preventDefault(event);
 		follow(event);
 	});
 
 	function follow(event) {
-		var x = event.clientX;
-		var y = event.clientY;
+		var x = event.clientX-container.offsetLeft;
+		var y = event.clientY-container.offsetTop;
 		if (x >= 457) {
 			hero.style.left = 403 + 'px';
 		} else if (x <= 55) {
